@@ -5,6 +5,7 @@ import Util.ConnectionUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,19 +19,21 @@ public class MessageDAO {
     public Message insertMessage(Message message) {
         Connection connection = ConnectionUtil.getConnection();
         try {
-            String sql = "INSERT INTO message(message_id, posted_by, message_text, time_posted_epoch) VALUES (?, ?, ?, ?);";
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, message.getMessage_id());
-            ps.setInt(2, message.getPosted_by());
-            ps.setString(3, message.getMessage_text());
-            ps.setLong(4, message.getTime_posted_epoch());
+            String sql = "INSERT INTO message(posted_by, message_text, time_posted_epoch) VALUES (?, ?, ?);";
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, message.getPosted_by());
+            ps.setString(2, message.getMessage_text());
+            ps.setLong(3, message.getTime_posted_epoch());
 
             ps.executeUpdate();
-            return message;
+            ResultSet pkeyResultSet = ps.getGeneratedKeys();
+            if (pkeyResultSet.next()) {
+                int generatedMessageId = pkeyResultSet.getInt(1);
+                return new Message(generatedMessageId, message.getPosted_by(), message.getMessage_text(), message.getTime_posted_epoch());
+            }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
         return null;
     }
 
@@ -124,8 +127,23 @@ public class MessageDAO {
         return null;
     }
 
-    // Update Message Text
-    
-    // User login
-    // User Registration(insert account)
+    /**
+     * Update Message Text
+     * @param message
+     * @return message that was updated given message id
+     */
+    public Message updateMessageText(String newMessage, Message message) {
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "UPDATE message SET message_text = ? WHERE message_id = ?;";
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, newMessage);
+            ps.setInt(2, message.getMessage_id());
+            ps.executeUpdate();
+            return message;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
 }
