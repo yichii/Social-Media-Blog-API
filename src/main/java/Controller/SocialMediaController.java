@@ -1,5 +1,12 @@
 package Controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import Model.Account;
+import Model.Message;
+import Service.AccountService;
+import Service.MessageService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -9,6 +16,13 @@ import io.javalin.http.Context;
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
 public class SocialMediaController {
+    AccountService accountService;
+    MessageService messageService;
+
+    public SocialMediaController() {
+        this.accountService = new AccountService();
+        this.messageService = new MessageService();
+    }
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
      * suite must receive a Javalin object from this method.
@@ -16,7 +30,14 @@ public class SocialMediaController {
      */
     public Javalin startAPI() {
         Javalin app = Javalin.create();
-        app.get("example-endpoint", this::exampleHandler);
+        app.post("/messages", this::postMessageHandler);
+        // app.delete("/messages/{message_id}", this::deleteMessageHandler);
+        // app.get("/messages/{message_id}", this::getMessagesByMessageIdHandler);
+        // app.get("/messages", this::getAllMessagesHandler);
+        // app.get("/accounts/{account_id}/messages", this::getAllMessagesForUserHandler);
+        // app.patch("/messages/{message_id}", this::updateMessageTextHandler);
+        // app.post("/register", this::userRegistrationHandler);
+        // app.post("/login", this::userLoginHandler);
 
         return app;
     }
@@ -25,8 +46,16 @@ public class SocialMediaController {
      * This is an example handler for an example endpoint.
      * @param context The Javalin Context object manages information about both the HTTP request and response.
      */
-    private void exampleHandler(Context context) {
-        context.json("sample text");
+    private void postMessageHandler(Context ctx) throws JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(ctx.body(), Message.class);
+        Message addedMessage = messageService.addMessage(message);
+        if (addedMessage == null) {
+            ctx.status(400);
+        } else {
+            ctx.json(mapper.writeValueAsString(addedMessage));
+            ctx.status(200);
+        }
     }
 
 

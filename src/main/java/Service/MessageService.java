@@ -26,8 +26,8 @@ public class MessageService {
      * @param message
      * @return
      */
-    public Message createMessage(Message message) {
-        if ((message.getMessage_text() != null) && (message.getMessage_text().length() < 255) && (message.getPosted_by() != 0)) {
+    public Message addMessage(Message message) {
+        if ((message.getMessage_text() != "") && (message.getMessage_text().length() < 255) && (message.getPosted_by() != 0)) {
             return messageDAO.insertMessage(message);
         }
         return null;
