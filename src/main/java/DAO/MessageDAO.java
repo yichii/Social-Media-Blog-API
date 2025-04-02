@@ -71,14 +71,18 @@ public class MessageDAO {
      * @param message
      * @return message that was deleted
      */
-    public Message deleteMessageById(Message message) {
+    public Message deleteMessageById(int id) {
         Connection connection = ConnectionUtil.getConnection();
         try {
             String sql = "DELETE FROM message WHERE message_id = ?;";
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, message.getMessage_id());
-            ps.executeUpdate();
-            return message;
+            ps.setInt(1, id);
+            Message deletedMessage = this.getMessageByMessageId(id);
+            int result = ps.executeUpdate();
+            if (result != 0) {
+                return new Message(deletedMessage.getMessage_id(), deletedMessage.getPosted_by(), deletedMessage.getMessage_text(), deletedMessage.getTime_posted_epoch());
+            }
+            return null;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

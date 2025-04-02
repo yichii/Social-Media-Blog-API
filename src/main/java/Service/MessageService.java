@@ -38,11 +38,9 @@ public class MessageService {
      * @param message
      * @return
      */
-    public Message deleteMessage(Message message) {
-        if (messageDAO.getAllMessagesByUserId(message) != null) {
-            return messageDAO.deleteMessageById(message);
-        }
-        return null; 
+    public Object deleteMessage(int message_id) {
+        Message message = messageDAO.deleteMessageById(message_id);
+        return (message != null) ? message : "";
     }
 
     /**

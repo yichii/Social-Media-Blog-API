@@ -13,9 +13,11 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 /**
- * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
+ * TODO: You will need to write your own endpoints and handlers for your
+ * controller. The endpoints you will need can be
  * found in readme.md as well as the test cases. You should
- * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
+ * refer to prior mini-project labs and lecture materials for guidance on how a
+ * controller may be built.
  */
 public class SocialMediaController {
     AccountService accountService;
@@ -25,18 +27,23 @@ public class SocialMediaController {
         this.accountService = new AccountService();
         this.messageService = new MessageService();
     }
+
     /**
-     * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
+     * In order for the test cases to work, you will need to write the endpoints in
+     * the startAPI() method, as the test
      * suite must receive a Javalin object from this method.
-     * @return a Javalin app object which defines the behavior of the Javalin controller.
+     * 
+     * @return a Javalin app object which defines the behavior of the Javalin
+     *         controller.
      */
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         app.post("/messages", this::postMessageHandler);
-        // app.delete("/messages/{message_id}", this::deleteMessageHandler);
+        app.delete("/messages/{message_id}", this::deleteMessageHandler);
         app.get("/messages/{message_id}", this::getMessageByMessageIdHandler);
         app.get("/messages", this::getAllMessagesHandler);
-        // app.get("/accounts/{account_id}/messages", this::getAllMessagesForUserHandler);
+        // app.get("/accounts/{account_id}/messages",
+        // this::getAllMessagesForUserHandler);
         app.patch("/messages/{message_id}", this::updateMessageTextHandler);
         // app.post("/register", this::userRegistrationHandler);
         // app.post("/login", this::userLoginHandler);
@@ -44,7 +51,7 @@ public class SocialMediaController {
         return app;
     }
 
-    private void postMessageHandler(Context ctx) throws JsonProcessingException{
+    private void postMessageHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Message message = mapper.readValue(ctx.body(), Message.class);
         Message addedMessage = messageService.addMessage(message);
@@ -55,7 +62,13 @@ public class SocialMediaController {
             ctx.status(200);
         }
     }
-    
+
+    private void deleteMessageHandler(Context ctx) throws JsonProcessingException {
+        int id = Integer.parseInt(ctx.pathParam("message_id"));
+        Object deletedMessage = messageService.deleteMessage(id);
+        ctx.json(deletedMessage);
+    }
+
     private void getMessageByMessageIdHandler(Context ctx) {
         int userId = Integer.parseInt(ctx.pathParam("message_id"));
         Object message = messageService.getMessage(userId);
@@ -67,7 +80,7 @@ public class SocialMediaController {
         ctx.json(messageService.getAllMessages());
     }
 
-    private void updateMessageTextHandler(Context ctx) throws JsonProcessingException{
+    private void updateMessageTextHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Message message = mapper.readValue(ctx.body(), Message.class);
         int message_id = Integer.parseInt(ctx.pathParam("message_id"));
