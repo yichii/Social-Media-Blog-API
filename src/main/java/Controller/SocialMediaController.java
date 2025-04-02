@@ -1,5 +1,7 @@
 package Controller;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -32,8 +34,8 @@ public class SocialMediaController {
         Javalin app = Javalin.create();
         app.post("/messages", this::postMessageHandler);
         // app.delete("/messages/{message_id}", this::deleteMessageHandler);
-        // app.get("/messages/{message_id}", this::getMessagesByMessageIdHandler);
-        // app.get("/messages", this::getAllMessagesHandler);
+        app.get("/messages/{message_id}", this::getMessageByMessageIdHandler);
+        app.get("/messages", this::getAllMessagesHandler);
         // app.get("/accounts/{account_id}/messages", this::getAllMessagesForUserHandler);
         // app.patch("/messages/{message_id}", this::updateMessageTextHandler);
         // app.post("/register", this::userRegistrationHandler);
@@ -56,6 +58,17 @@ public class SocialMediaController {
             ctx.json(mapper.writeValueAsString(addedMessage));
             ctx.status(200);
         }
+    }
+    
+    private void getMessageByMessageIdHandler(Context ctx) {
+        int userId = Integer.parseInt(ctx.pathParam("message_id"));
+        Object message = messageService.getMessage(userId);
+        ctx.json(message);
+        ctx.status(200);
+    }
+
+    private void getAllMessagesHandler(Context ctx) {
+        ctx.json(messageService.getAllMessages());
     }
 
 

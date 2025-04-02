@@ -39,7 +39,7 @@ public class MessageService {
      * @return
      */
     public Message deleteMessage(Message message) {
-        if (messageDAO.getMessageByMessageId(message) != null) {
+        if (messageDAO.getAllMessagesByUserId(message) != null) {
             return messageDAO.deleteMessageById(message);
         }
         return null; 
@@ -65,10 +65,11 @@ public class MessageService {
     /**
      * Retrive message by message id
      * @param message
-     * @return
+     * @return Object: either message or empty message
      */
-    public Message getMessage(Message message) {
-        return messageDAO.getMessageByMessageId(message);
+    public Object getMessage(int message_id) {
+        Message message = messageDAO.getMessageByMessageId(message_id);
+        return (message != null) ? message : "";
     }
 
     /**
@@ -78,7 +79,7 @@ public class MessageService {
      * @return
      */
     public Message updateMessage(String newMessage, Message message) {
-        if ((messageDAO.getMessageByMessageId(message) != null) && (newMessage != null) && newMessage.length() < 255) {
+        if ((messageDAO.getMessageByMessageId(message.getMessage_id()) != null) && (newMessage != null) && newMessage.length() < 255) {
             return messageDAO.updateMessageText(newMessage, message);
         }
         return null;

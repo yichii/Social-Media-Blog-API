@@ -13,6 +13,7 @@ import java.util.List;
 public class MessageDAO {
     /**
      * Create Message
+     * 
      * @param message
      * @return message that was created
      */
@@ -29,7 +30,8 @@ public class MessageDAO {
             ResultSet pkeyResultSet = ps.getGeneratedKeys();
             if (pkeyResultSet.next()) {
                 int generatedMessageId = pkeyResultSet.getInt(1);
-                return new Message(generatedMessageId, message.getPosted_by(), message.getMessage_text(), message.getTime_posted_epoch());
+                return new Message(generatedMessageId, message.getPosted_by(), message.getMessage_text(),
+                        message.getTime_posted_epoch());
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -39,6 +41,7 @@ public class MessageDAO {
 
     /**
      * Retrieve All Messages
+     * 
      * @return all messages in database
      */
     public List<Message> getAllMessages() {
@@ -64,6 +67,7 @@ public class MessageDAO {
 
     /**
      * Delete Message by Message Id
+     * 
      * @param message
      * @return message that was deleted
      */
@@ -83,6 +87,7 @@ public class MessageDAO {
 
     /**
      * Retrieve All Messages For User
+     * 
      * @param message
      * @return all messages that matches user id
      */
@@ -109,18 +114,27 @@ public class MessageDAO {
     }
 
     /**
-     * Retrieve Message by Message Id
-     * @param message
-     * @return message that matches message id
+     * Retrives message based on given message id
+     * 
+     * @param id
+     * @return
      */
-    public Message getMessageByMessageId(Message message) {
+    public Message getMessageByMessageId(int messageId) {
         Connection connection = ConnectionUtil.getConnection();
         try {
             String sql = "SELECT * FROM message WHERE message_id = ?;";
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, message.getMessage_id());
-            ps.executeQuery();
-            return message;
+            ps.setInt(1, messageId);
+            ResultSet rs = ps.executeQuery();
+
+            // Create new message object to return
+            if (rs.next()) {
+                return new Message(rs.getInt("message_id"),
+                        rs.getInt("posted_by"),
+                        rs.getString("message_text"),
+                        rs.getLong("time_posted_epoch"));
+            }
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -129,6 +143,7 @@ public class MessageDAO {
 
     /**
      * Update Message Text
+     * 
      * @param message
      * @return message that was updated given message id
      */
