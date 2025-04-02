@@ -78,9 +78,12 @@ public class MessageService {
      * @param message
      * @return
      */
-    public Message updateMessage(String newMessage, Message message) {
-        if ((messageDAO.getMessageByMessageId(message.getMessage_id()) != null) && (newMessage != null) && newMessage.length() < 255) {
-            return messageDAO.updateMessageText(newMessage, message);
+    public Message updateMessage(int id, Message message) {
+        Message existingMessage = messageDAO.getMessageByMessageId(id);
+        boolean isEmpty = message.getMessage_text().isEmpty();
+        boolean isOverCharLimit = message.getMessage_text().length() > 255;
+        if ((existingMessage != null) && !isEmpty && !isOverCharLimit) {
+            return messageDAO.updateMessageText(id, message);
         }
         return null;
     }
