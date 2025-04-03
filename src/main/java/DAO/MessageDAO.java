@@ -68,7 +68,7 @@ public class MessageDAO {
     /**
      * Delete Message by Message Id
      * 
-     * @param message
+     * @param id
      * @return message that was deleted
      */
     public Message deleteMessageById(int id) {
@@ -93,7 +93,7 @@ public class MessageDAO {
      * Retrives message based on given message id
      * 
      * @param id
-     * @return
+     * @return message that is found, null if not found
      */
     public Message getMessageByMessageId(int messageId) {
         Connection connection = ConnectionUtil.getConnection();
@@ -120,6 +120,7 @@ public class MessageDAO {
     /**
      * Update Message Text
      * 
+     * @param id
      * @param message
      * @return message that was updated given message id
      */

@@ -24,7 +24,7 @@ public class MessageService {
     /**
      * Create message
      * @param message
-     * @return
+     * @return newMessage if valid, null if not
      */
     public Message addMessage(Message message) {
         if ((message.getMessage_text() != "") && (message.getMessage_text().length() < 255) && (message.getPosted_by() != 0)) {
@@ -35,8 +35,8 @@ public class MessageService {
 
     /**
      * Delete Message by Message Id
-     * @param message
-     * @return
+     * @param message_id
+     * @return message if exists, null if not
      */
     public Object deleteMessage(int message_id) {
         Message message = messageDAO.deleteMessageById(message_id);
@@ -53,8 +53,8 @@ public class MessageService {
 
     /**
      * Retrive message by message id
-     * @param message
-     * @return Object: either message or empty message
+     * @param message_id
+     * @return Object: either message if exists or empty message
      */
     public Object getMessage(int message_id) {
         Message message = messageDAO.getMessageByMessageId(message_id);
@@ -63,9 +63,9 @@ public class MessageService {
 
     /**
      * Update Message Text
-     * @param newMessage
+     * @param id
      * @param message
-     * @return
+     * @return updatedMessage if valid, null if not
      */
     public Message updateMessage(int id, Message message) {
         Message existingMessage = messageDAO.getMessageByMessageId(id);

@@ -32,6 +32,11 @@ public class AccountService {
         return accountDAO.getAllMessagesByUserId(id);
     }
 
+    /**
+     * Creates account for user
+     * @param account
+     * @return newAccount if account doesn't exist already, null if already exists
+     */
     public Account registerAccount(Account account) {
         boolean isBlank = account.getUsername().isEmpty();
         boolean isCorrectPasswordLength = account.getPassword().length() > 4;
@@ -42,6 +47,12 @@ public class AccountService {
         return null;
     }
 
+    /**
+     * Sees if username and password combination exists in database
+     * @param username
+     * @param password
+     * @return existingAccount if found, null if not found
+     */
     public Account loginAccount(String username, String password) {
         Account existingAccount = accountDAO.loginAccount(username, password);
         return (existingAccount == null) ? null : existingAccount;

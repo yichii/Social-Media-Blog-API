@@ -39,7 +39,12 @@ public class AccountDAO {
         return null;
     }
 
-    // Login
+    /**
+     * Logins to app if matching username and password are found in database
+     * @param username
+     * @param password
+     * @return existing account if found, null if not found
+     */
     public Account loginAccount(String username, String password) {
         Connection connection = ConnectionUtil.getConnection();
         try {
@@ -63,7 +68,7 @@ public class AccountDAO {
     /**
      * Retrieve All Messages For User
      * 
-     * @param message
+     * @param id
      * @return all messages that matches user id
      */
     public List<Message> getAllMessagesByUserId(int id) {
