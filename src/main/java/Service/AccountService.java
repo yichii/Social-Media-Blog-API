@@ -33,12 +33,12 @@ public class AccountService {
     }
 
     public Account registerAccount(Account account) {
-        // boolean isBlank = account.getUsername().isEmpty();
-        // boolean isCorrectPasswordLength = account.getPassword().length() > 4;
-        // Account existingAccount = accountDAO.loginAccount(account.getUsername());
-        // if (!isBlank && isCorrectPasswordLength && (existingAccount == null)) {
-        //     return accountDAO.registerAccount(account);
-        // }
+        boolean isBlank = account.getUsername().isEmpty();
+        boolean isCorrectPasswordLength = account.getPassword().length() > 4;
+        Account existingAccount = accountDAO.loginAccount(account.getUsername(), account.getPassword());
+        if (!isBlank && isCorrectPasswordLength && (existingAccount == null)) {
+            return accountDAO.registerAccount(account);
+        }
         return null;
     }
 
