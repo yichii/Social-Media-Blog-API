@@ -42,15 +42,6 @@ public class MessageService {
         Message message = messageDAO.deleteMessageById(message_id);
         return (message != null) ? message : "";
     }
-
-    /**
-     * Retrive all messages for User
-     * @param message
-     * @return
-     */
-    public List<Message> getAllMessagesForUser(Message message) {
-        return messageDAO.getAllMessagesByUserId(message);
-    }
     
     /**
      * Uses the messageDAO to get all messages

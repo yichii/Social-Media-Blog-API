@@ -42,11 +42,10 @@ public class SocialMediaController {
         app.delete("/messages/{message_id}", this::deleteMessageHandler);
         app.get("/messages/{message_id}", this::getMessageByMessageIdHandler);
         app.get("/messages", this::getAllMessagesHandler);
-        // app.get("/accounts/{account_id}/messages",
-        // this::getAllMessagesForUserHandler);
+        app.get("/accounts/{account_id}/messages", this::getAllMessagesForUserHandler);
         app.patch("/messages/{message_id}", this::updateMessageTextHandler);
         // app.post("/register", this::userRegistrationHandler);
-        // app.post("/login", this::userLoginHandler);
+        app.post("/login", this::userLoginHandler);
 
         return app;
     }
@@ -70,8 +69,8 @@ public class SocialMediaController {
     }
 
     private void getMessageByMessageIdHandler(Context ctx) {
-        int userId = Integer.parseInt(ctx.pathParam("message_id"));
-        Object message = messageService.getMessage(userId);
+        int messageId = Integer.parseInt(ctx.pathParam("message_id"));
+        Object message = messageService.getMessage(messageId);
         ctx.json(message);
         ctx.status(200);
     }
@@ -90,6 +89,25 @@ public class SocialMediaController {
         } else {
             ctx.json(mapper.writeValueAsString(updatedMessage));
             ctx.status(200);
+        }
+    }
+
+    private void getAllMessagesForUserHandler(Context ctx) {
+        int userId = Integer.parseInt(ctx.pathParam("account_id"));
+        ctx.json(accountService.getAllMessagesForUser(userId));
+        ctx.status(200);
+    }
+
+    private void userLoginHandler(Context ctx) {
+        Account account = ctx.bodyAsClass(Account.class);
+        String username = account.getUsername();
+        String password = account.getPassword();
+        Account retrievedAccount = accountService.loginAccount(username, password);
+        if (retrievedAccount != null) { 
+            ctx.json(retrievedAccount);
+            ctx.status(200);
+        } else {
+            ctx.status(401);
         }
     }
 }

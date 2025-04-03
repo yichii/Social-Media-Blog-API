@@ -90,34 +90,6 @@ public class MessageDAO {
     }
 
     /**
-     * Retrieve All Messages For User
-     * 
-     * @param message
-     * @return all messages that matches user id
-     */
-    public List<Message> getAllMessagesByUserId(Message message) {
-        Connection connection = ConnectionUtil.getConnection();
-        List<Message> messages = new ArrayList<>();
-        try {
-            String sql = "SELECT * FROM message WHERE posted_by = ?;";
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, message.getPosted_by());
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Message newMessage = (new Message(
-                        rs.getInt("message_id"),
-                        rs.getInt("posted_by"),
-                        rs.getString("message_text"),
-                        rs.getLong("time_posted_epoch")));
-                messages.add(newMessage);
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return messages;
-    }
-
-    /**
      * Retrives message based on given message id
      * 
      * @param id
